@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -9,115 +8,264 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f1f4fa;color:#202b40;font-family:Arial,sans-serif}
-header{background:#2457a7;color:white;padding:22px 16px;text-align:center}
-header h2{margin:0 0 7px}
-main{max-width:650px;margin:auto;padding:15px}
-.card{background:white;padding:16px;margin:12px 0;border-radius:14px;box-shadow:0 2px 9px #0000000c}
-h3{margin:0 0 14px;color:#2457a7}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:#edf3ff;padding:14px;border-radius:10px}
-.stat strong{display:block;font-size:21px;margin-top:8px}
-label{display:block;margin:12px 0 6px}
-input,select,button{width:100%;padding:12px;border:1px solid #ccd4e2;border-radius:9px;font-size:16px}
-button{background:#2457a7;color:white;border:0;margin-top:14px;font-weight:bold}
-button.delete{background:#b83232;width:auto;padding:7px 12px;margin:0}
-.item{padding:11px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;gap:8px}
-small{color:#65738a}
+header{background:#2457a7;color:#fff;padding:18px}
+header h2{margin:0 0 6px}
+main{max-width:760px;margin:auto;padding:14px}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
+button{background:#2457a7;color:white;border:0;border-radius:8px;padding:11px;cursor:pointer;font-size:14px}
+nav button{min-height:44px}
+.card{background:#fff;padding:15px;margin:12px 0;border-radius:12px;box-shadow:0 2px 8px #0001}
+h3{margin:0 0 12px;color:#2457a7}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stat{background:#edf3ff;padding:12px;border-radius:9px}
+.stat strong{display:block;font-size:20px;margin-top:6px;overflow-wrap:anywhere}
+label{display:block;margin:10px 0 5px}
+input,select{width:100%;padding:11px;border:1px solid #ccd4e2;border-radius:8px;font-size:15px;background:#fff}
+.item{padding:11px 0;border-bottom:1px solid #e5e9f0;overflow-wrap:anywhere}
+.item:last-child{border-bottom:0}
+.small{font-size:12px;color:#68758a}
+.actions{display:flex;gap:7px;margin-top:7px}
+.actions button{width:auto;padding:7px 12px;font-size:12px}
+.danger{background:#b83232}
+.secondary{background:#68758a}
+.hidden{display:none!important}
+.notice{background:#fff5df;padding:10px;border-radius:8px;font-size:13px}
+@media(max-width:420px){nav{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<header>
-<h2>WASH & MORE</h2>
-Business Manager
-</header>
+<header><h2>WASH & MORE</h2><div>Business Manager App</div></header>
 <main>
-<div class="card">
-<h3>ড্যাশবোর্ড</h3>
-<label>তারিখ</label>
-<input type="date" id="date">
-<div class="grid" style="margin-top:14px">
-<div class="stat">মোট বিক্রি<strong id="sales">0</strong><small>রিয়াল</small></div>
-<div class="stat">মোট খরচ<strong id="expenses">0</strong><small>রিয়াল</small></div>
-<div class="stat">নগদ বিক্রি<strong id="cash">0</strong><small>রিয়াল</small></div>
-<div class="stat">কার্ড বিক্রি<strong id="card">0</strong><small>রিয়াল</small></div>
-</div>
-<div class="stat" style="margin-top:10px">
-বিক্রি থেকে খরচ বাদে<strong id="net">0</strong><small>রিয়াল</small>
-</div>
-</div>
+<nav>
+<button onclick="show('home')">ড্যাশবোর্ড</button>
+<button onclick="show('records')">বিক্রি ও খরচ</button>
+<button onclick="show('staff')">কর্মচারী ও বেতন</button>
+<button onclick="show('loans')">ধার হিসাব</button>
+<button onclick="show('reports')">রিপোর্ট</button>
+<button onclick="show('settings')">ব্যাকআপ</button>
+</nav>
 
+<section id="home">
 <div class="card">
-<h3>বিক্রি যোগ করুন</h3>
-<label>নগদ বিক্রি (রিয়াল)</label>
-<input type="number" id="cashInput" min="0" placeholder="যেমন 150">
-<label>কার্ড বিক্রি (রিয়াল)</label>
-<input type="number" id="cardInput" min="0" placeholder="যেমন 200">
-<button onclick="addSale()">বিক্রি সংরক্ষণ করুন</button>
+<h3>ব্যবসার সারসংক্ষেপ</h3>
+<label>যে তারিখের হিসাব দেখবেন</label><input type="date" id="homeDate">
+<div class="grid">
+<div class="stat">নির্বাচিত দিনের বিক্রি<strong id="todaySales">0</strong></div>
+<div class="stat">নির্বাচিত দিনের খরচ<strong id="todayExpense">0</strong></div>
+<div class="stat">সর্বমোট বিক্রি<strong id="allSales">0</strong></div>
+<div class="stat">সর্বমোট খরচ<strong id="allExpense">0</strong></div>
 </div>
+<p>সর্বমোট লাভ/ক্ষতি: <b id="netTotal">0</b> রিয়াল</p>
+</div>
+<div class="card"><h3>সাম্প্রতিক হিসাব</h3><div id="recent"></div></div>
+</section>
 
+<section id="records" class="hidden">
+<div class="card">
+<h3>দৈনিক বিক্রি যোগ করুন</h3>
+<label>তারিখ</label><input type="date" id="sDate">
+<label>নগদ বিক্রি (রিয়াল)</label><input type="number" id="cash" min="0" step="0.01">
+<label>কার্ড বিক্রি (রিয়াল)</label><input type="number" id="card" min="0" step="0.01">
+<button onclick="addSale()">বিক্রি সংরক্ষণ</button>
+</div>
 <div class="card">
 <h3>খরচ যোগ করুন</h3>
-<label>খরচের বিবরণ</label>
-<input id="expenseName" placeholder="যেমন কেমিক্যাল">
-<label>খরচের পরিমাণ (রিয়াল)</label>
-<input type="number" id="expenseAmount" min="0" placeholder="যেমন 25">
-<button onclick="addExpense()">খরচ সংরক্ষণ করুন</button>
+<label>তারিখ</label><input type="date" id="eDate">
+<label>খরচের বিবরণ</label><input id="eNote" placeholder="যেমন: কেমিক্যাল, গ্যাস">
+<label>পরিমাণ (রিয়াল)</label><input type="number" id="eAmount" min="0" step="0.01">
+<button onclick="addExpense()">খরচ সংরক্ষণ</button>
 </div>
+<div class="card"><h3>বিক্রি ও খরচের তালিকা</h3><div id="salesList"></div></div>
+</section>
 
+<section id="staff" class="hidden">
 <div class="card">
-<h3>লেনদেনের তালিকা</h3>
-<div id="records">এখনো কোনো হিসাব নেই।</div>
+<h3>কর্মচারী যোগ করুন</h3>
+<label>নাম</label><input id="empName" placeholder="কর্মচারীর নাম">
+<label>মাসিক বেতন (রিয়াল)</label><input type="number" id="empSalary" min="0" step="0.01">
+<button onclick="addEmployee()">কর্মচারী সংরক্ষণ</button>
 </div>
+<div class="card">
+<h3>বেতন / অগ্রিম প্রদান</h3>
+<label>কর্মচারী</label><select id="payEmp"></select>
+<label>তারিখ</label><input type="date" id="payDate">
+<label>কোন মাসের হিসাব</label><input type="month" id="payMonth">
+<label>ধরন</label><select id="payType"><option value="advance">অগ্রিম</option><option value="salary">বেতন প্রদান</option></select>
+<label>পরিমাণ (রিয়াল)</label><input type="number" id="payAmount" min="0" step="0.01">
+<button onclick="addPayment()">পেমেন্ট সংরক্ষণ</button>
+</div>
+<div class="card"><h3>কর্মচারীদের হিসাব</h3><div id="staffList"></div></div>
+<div class="card"><h3>পেমেন্টের ইতিহাস</h3><div id="paymentList"></div></div>
+</section>
+
+<section id="loans" class="hidden">
+<div class="card">
+<h3>ধার / পাওনা / দেনা যোগ করুন</h3>
+<label>ব্যক্তির নাম</label><input id="loanPerson" placeholder="নাম লিখুন">
+<label>তারিখ</label><input type="date" id="loanDate">
+<label>হিসাবের ধরন</label>
+<select id="loanType">
+<option value="given">আমি টাকা দিয়েছি (পাওনা)</option>
+<option value="received">আমার দেওয়া টাকা ফেরত পেয়েছি</option>
+<option value="borrowed">আমি টাকা ধার নিয়েছি (দেনা)</option>
+<option value="repaid">আমি ধার পরিশোধ করেছি</option>
+</select>
+<label>পরিমাণ (রিয়াল)</label><input type="number" id="loanAmount" min="0" step="0.01">
+<label>বিবরণ (ঐচ্ছিক)</label><input id="loanNote">
+<button onclick="addLoan()">হিসাব সংরক্ষণ</button>
+</div>
+<div class="card"><h3>ধারের সারসংক্ষেপ</h3><div class="grid">
+<div class="stat">আমার পাওনা<strong id="receivable">0</strong></div>
+<div class="stat">আমার দেনা<strong id="payable">0</strong></div>
+</div></div>
+<div class="card"><h3>ব্যক্তিভিত্তিক হিসাব</h3><div id="loanPeople"></div></div>
+<div class="card"><h3>ধারের লেনদেন</h3><div id="loanList"></div></div>
+</section>
+
+<section id="reports" class="hidden">
+<div class="card">
+<h3>তারিখ অনুযায়ী রিপোর্ট</h3>
+<label>শুরুর তারিখ</label><input type="date" id="fromDate">
+<label>শেষ তারিখ</label><input type="date" id="toDate">
+<button onclick="makeReport()">রিপোর্ট দেখুন</button>
+<div id="reportResult"></div>
+</div>
+</section>
+
+<section id="settings" class="hidden">
+<div class="card">
+<h3>ডেটা ব্যাকআপ</h3>
+<p class="small">হিসাব এই ব্রাউজারে সংরক্ষিত থাকে। নিয়মিত ব্যাকআপ ডাউনলোড করে নিরাপদে রাখুন।</p>
+<button onclick="backup()">ব্যাকআপ ডাউনলোড</button>
+<label>ব্যাকআপ ফাইল থেকে ফিরিয়ে আনুন</label>
+<input type="file" id="restoreFile" accept=".json,application/json">
+<button onclick="restore()">ব্যাকআপ ফিরিয়ে আনুন</button>
+</div>
+<div class="card notice">সতর্কতা: ব্রাউজারের ডেটা মুছে গেলে হিসাব হারিয়ে যেতে পারে। নিয়মিত ব্যাকআপ রাখুন।</div>
+</section>
 </main>
+
 <script>
-const key="washmore_records_v1";
-let records=JSON.parse(localStorage.getItem(key)||"[]");
-const el=id=>document.getElementById(id);
-el("date").value=new Date().toLocaleDateString("en-CA");
-function save(){
-localStorage.setItem(key,JSON.stringify(records));
-render();
-}
+const KEY="washmore_manager_v3";
+const emptyDB=()=>({sales:[],expenses:[],employees:[],payments:[],loans:[]});
+let db;
+try{db=Object.assign(emptyDB(),JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){db=emptyDB()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db));render()}catch(e){alert("ফোনের স্টোরেজে জায়গা নেই। ব্যাকআপ নিন।")}}
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function money(n){return (Number(n)||0).toFixed(2).replace(/\.00$/,"")}
+function val(id){return document.getElementById(id).value}
+function num(id){return Number(val(id))||0}
+function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function show(id){document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");render()}
 function addSale(){
-let cash=Number(el("cashInput").value||0);
-let card=Number(el("cardInput").value||0);
-if(cash<0||card<0||cash+card<=0){alert("সঠিক বিক্রির পরিমাণ লিখুন");return}
-records.push({id:Date.now(),date:el("date").value,type:"বিক্রি",name:"নগদ ও কার্ড",cash,card,amount:cash+card});
-el("cashInput").value="";el("cardInput").value="";
-save();
+ const date=val("sDate"),cash=num("cash"),card=num("card");
+ if(!date||cash+card<=0)return alert("তারিখ ও বিক্রির পরিমাণ লিখুন");
+ db.sales.push({id:Date.now(),date,cash,card});
+ document.getElementById("cash").value="";document.getElementById("card").value="";save();alert("বিক্রি সংরক্ষণ হয়েছে");
 }
 function addExpense(){
-let name=el("expenseName").value.trim();
-let amount=Number(el("expenseAmount").value);
-if(!name||!Number.isFinite(amount)||amount<=0){alert("বিবরণ ও সঠিক পরিমাণ লিখুন");return}
-records.push({id:Date.now(),date:el("date").value,type:"খরচ",name,amount});
-el("expenseName").value="";el("expenseAmount").value="";
-save();
+ const date=val("eDate"),amount=num("eAmount"),note=val("eNote").trim();
+ if(!date||amount<=0)return alert("তারিখ ও খরচের পরিমাণ লিখুন");
+ db.expenses.push({id:Date.now(),date,amount,note});
+ document.getElementById("eAmount").value="";document.getElementById("eNote").value="";save();alert("খরচ সংরক্ষণ হয়েছে");
 }
-function removeRecord(id){
-if(confirm("এই হিসাবটি মুছে ফেলবেন?")){
-records=records.filter(r=>r.id!==id);save();
+function addEmployee(){
+ const name=val("empName").trim(),salary=num("empSalary");
+ if(!name||salary<=0)return alert("নাম ও সঠিক বেতন লিখুন");
+ db.employees.push({id:Date.now(),name,salary});
+ document.getElementById("empName").value="";document.getElementById("empSalary").value="";save();
 }
+function addPayment(){
+ const employeeId=Number(val("payEmp")),date=val("payDate"),month=val("payMonth"),amount=num("payAmount"),type=val("payType");
+ if(!employeeId||!date||!month||amount<=0)return alert("কর্মচারী, তারিখ, মাস ও পরিমাণ দিন");
+ db.payments.push({id:Date.now(),employeeId,date,month,amount,type});
+ document.getElementById("payAmount").value="";save();alert("পেমেন্ট সংরক্ষণ হয়েছে");
+}
+function addLoan(){
+ const person=val("loanPerson").trim(),date=val("loanDate"),amount=num("loanAmount"),type=val("loanType"),note=val("loanNote").trim();
+ if(!person||!date||amount<=0)return alert("ব্যক্তির নাম, তারিখ ও পরিমাণ দিন");
+ db.loans.push({id:Date.now(),person,date,amount,type,note});
+ document.getElementById("loanAmount").value="";document.getElementById("loanNote").value="";save();
+}
+function del(arr,id){
+ if(!confirm("এই হিসাবটি মুছে ফেলবেন?"))return;
+ db[arr]=db[arr].filter(x=>x.id!==id);save();
 }
 function render(){
-let list=records.filter(r=>r.date===el("date").value);
-let sales=list.filter(r=>r.type==="বিক্রি");
-let expenses=list.filter(r=>r.type==="খরচ");
-let cash=sales.reduce((s,r)=>s+r.cash,0);
-let card=sales.reduce((s,r)=>s+r.card,0);
-let expense=expenses.reduce((s,r)=>s+r.amount,0);
-let total=cash+card;
-el("sales").textContent=total;
-el("expenses").textContent=expense;
-el("cash").textContent=cash;
-el("card").textContent=card;
-el("net").textContent=total-expense;
-el("records").innerHTML=list.length?list.slice().reverse().map(r=>
-`<div class="item"><div><b>${r.type}: ${r.name}</b><br><small>${r.date}</small><br>${r.type==="বিক্রি"?"নগদ "+r.cash+" / কার্ড "+r.card:r.amount+" রিয়াল"}</div><button class="delete" onclick="removeRecord(${r.id})">মুছুন</button></div>`
-).join(""):"এখনো কোনো হিসাব নেই।";
+ const date=val("homeDate")||today();
+ const daySales=db.sales.filter(x=>x.date===date).reduce((a,x)=>a+x.cash+x.card,0);
+ const dayExp=db.expenses.filter(x=>x.date===date).reduce((a,x)=>a+x.amount,0);
+ const allS=db.sales.reduce((a,x)=>a+x.cash+x.card,0),allE=db.expenses.reduce((a,x)=>a+x.amount,0);
+ document.getElementById("todaySales").textContent=money(daySales);
+ document.getElementById("todayExpense").textContent=money(dayExp);
+ document.getElementById("allSales").textContent=money(allS);
+ document.getElementById("allExpense").textContent=money(allE);
+ document.getElementById("netTotal").textContent=money(allS-allE);
+
+ const recent=[...db.sales.map(x=>({...x,kind:"বিক্রি",amount:x.cash+x.card})),...db.expenses.map(x=>({...x,kind:"খরচ"}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+ document.getElementById("recent").innerHTML=recent.map(x=>`<div class="item">${safe(x.date)} — ${x.kind}: ${money(x.amount)} রিয়াল</div>`).join("")||"কোনো হিসাব নেই";
+
+ const rows=[...db.sales.map(x=>({...x,kind:"বিক্রি",desc:"নগদ "+money(x.cash)+" + কার্ড "+money(x.card),amount:x.cash+x.card,arr:"sales"})),...db.expenses.map(x=>({...x,kind:"খরচ",desc:x.note,arr:"expenses"}))].sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById("salesList").innerHTML=rows.map(x=>`<div class="item">${safe(x.date)} — <b>${x.kind}</b><br>${safe(x.desc||"")}<br>${money(x.amount)} রিয়াল<div class="actions"><button class="danger" onclick="del('${x.arr}',${x.id})">মুছুন</button></div></div>`).join("")||"কোনো হিসাব নেই";
+
+ const month=val("payMonth")||today().slice(0,7);
+ document.getElementById("payEmp").innerHTML=db.employees.map(e=>`<option value="${e.id}">${safe(e.name)}</option>`).join("");
+ document.getElementById("staffList").innerHTML=db.employees.map(e=>{
+  const paid=db.payments.filter(p=>p.employeeId===e.id&&p.month===month).reduce((a,p)=>a+p.amount,0);
+  return `<div class="item"><b>${safe(e.name)}</b><br>মাসিক বেতন: ${money(e.salary)} রিয়াল<br>এই মাসে দেওয়া: ${money(paid)} রিয়াল<br>বাকি: <b>${money(e.salary-paid)} রিয়াল</b><div class="actions"><button class="danger" onclick="del('employees',${e.id})">কর্মচারী মুছুন</button></div></div>`;
+ }).join("")||"কর্মচারী যোগ করা হয়নি";
+ document.getElementById("paymentList").innerHTML=[...db.payments].sort((a,b)=>b.date.localeCompare(a.date)).map(p=>{
+  const e=db.employees.find(x=>x.id===p.employeeId);
+  return `<div class="item">${safe(p.date)} — ${safe(e?e.name:"মুছে ফেলা কর্মচারী")}<br>${p.type==="advance"?"অগ্রিম":"বেতন"}: ${money(p.amount)} রিয়াল (${safe(p.month)})<div class="actions"><button class="danger" onclick="del('payments',${p.id})">মুছুন</button></div></div>`;
+ }).join("")||"কোনো পেমেন্ট নেই";
+
+ const given=db.loans.filter(x=>x.type==="given").reduce((a,x)=>a+x.amount,0);
+ const got=db.loans.filter(x=>x.type==="received").reduce((a,x)=>a+x.amount,0);
+ const borrowed=db.loans.filter(x=>x.type==="borrowed").reduce((a,x)=>a+x.amount,0);
+ const repaid=db.loans.filter(x=>x.type==="repaid").reduce((a,x)=>a+x.amount,0);
+ document.getElementById("receivable").textContent=money(given-got);
+ document.getElementById("payable").textContent=money(borrowed-repaid);
+ const people=[...new Set(db.loans.map(x=>x.person))];
+ document.getElementById("loanPeople").innerHTML=people.map(p=>{
+  const a=db.loans.filter(x=>x.person===p);
+  const r=a.filter(x=>x.type==="given").reduce((s,x)=>s+x.amount,0)-a.filter(x=>x.type==="received").reduce((s,x)=>s+x.amount,0);
+  const d=a.filter(x=>x.type==="borrowed").reduce((s,x)=>s+x.amount,0)-a.filter(x=>x.type==="repaid").reduce((s,x)=>s+x.amount,0);
+  return `<div class="item"><b>${safe(p)}</b><br>তার কাছে পাওনা: ${money(r)} | তাকে দেনা: ${money(d)}</div>`;
+ }).join("")||"কোনো ধার নেই";
+ const labels={given:"আমি দিয়েছি",received:"ফেরত পেয়েছি",borrowed:"ধার নিয়েছি",repaid:"পরিশোধ করেছি"};
+ document.getElementById("loanList").innerHTML=[...db.loans].sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="item">${safe(x.date)} — <b>${safe(x.person)}</b><br>${labels[x.type]}: ${money(x.amount)} রিয়াল<br>${safe(x.note||"")}<div class="actions"><button class="danger" onclick="del('loans',${x.id})">মুছুন</button></div></div>`).join("")||"কোনো লেনদেন নেই";
 }
-el("date").addEventListener("change",render);
+function makeReport(){
+ const from=val("fromDate"),to=val("toDate");
+ if(!from||!to||from>to)return alert("সঠিক শুরুর ও শেষ তারিখ দিন");
+ const s=db.sales.filter(x=>x.date>=from&&x.date<=to).reduce((a,x)=>a+x.cash+x.card,0);
+ const e=db.expenses.filter(x=>x.date>=from&&x.date<=to).reduce((a,x)=>a+x.amount,0);
+ document.getElementById("reportResult").innerHTML=`<div class="item">সময়: ${safe(from)} থেকে ${safe(to)}</div><div class="item">মোট বিক্রি: <b>${money(s)} রিয়াল</b></div><div class="item">মোট খরচ: <b>${money(e)} রিয়াল</b></div><div class="item">লাভ/ক্ষতি: <b>${money(s-e)} রিয়াল</b></div>`;
+}
+function backup(){
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+ const a=document.createElement("a"),url=URL.createObjectURL(blob);
+ a.href=url;a.download="wash-more-backup-"+today()+".json";a.click();URL.revokeObjectURL(url);
+}
+function restore(){
+ const file=document.getElementById("restoreFile").files[0];
+ if(!file)return alert("আগে ব্যাকআপ ফাইল নির্বাচন করুন");
+ if(!confirm("বর্তমান হিসাব ব্যাকআপের তথ্য দিয়ে প্রতিস্থাপন হবে। চালিয়ে যাবেন?"))return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const x=JSON.parse(reader.result);
+   if(!x||!Array.isArray(x.sales)||!Array.isArray(x.expenses)||!Array.isArray(x.employees)||!Array.isArray(x.payments)||!Array.isArray(x.loans))throw new Error();
+   db=x;save();alert("ব্যাকআপ ফিরিয়ে আনা হয়েছে");
+  }catch(e){alert("এই ব্যাকআপ ফাইলটি সঠিক নয়")}
+ };
+ reader.readAsText(file);
+}
+["homeDate","payMonth"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+["homeDate","sDate","eDate","payDate","loanDate"].forEach(id=>document.getElementById(id).value=today());
+document.getElementById("payMonth").value=today().slice(0,7);
 render();
 </script>
 </body>
-</html>
+  </html>
+  
