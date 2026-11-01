@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2457a7">
+<title>WASH & MORE Business Manager</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f4fa;color:#202b40;font-family:Arial,sans-serif}
+header{background:#2457a7;color:white;padding:22px 16px;text-align:center}
+header h2{margin:0 0 7px}
+main{max-width:650px;margin:auto;padding:15px}
+.card{background:white;padding:16px;margin:12px 0;border-radius:14px;box-shadow:0 2px 9px #0000000c}
+h3{margin:0 0 14px;color:#2457a7}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#edf3ff;padding:14px;border-radius:10px}
+.stat strong{display:block;font-size:21px;margin-top:8px}
+label{display:block;margin:12px 0 6px}
+input,select,button{width:100%;padding:12px;border:1px solid #ccd4e2;border-radius:9px;font-size:16px}
+button{background:#2457a7;color:white;border:0;margin-top:14px;font-weight:bold}
+button.delete{background:#b83232;width:auto;padding:7px 12px;margin:0}
+.item{padding:11px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;gap:8px}
+small{color:#65738a}
+</style>
+</head>
+<body>
+<header>
+<h2>WASH & MORE</h2>
+Business Manager
+</header>
+<main>
+<div class="card">
+<h3>ড্যাশবোর্ড</h3>
+<label>তারিখ</label>
+<input type="date" id="date">
+<div class="grid" style="margin-top:14px">
+<div class="stat">মোট বিক্রি<strong id="sales">0</strong><small>রিয়াল</small></div>
+<div class="stat">মোট খরচ<strong id="expenses">0</strong><small>রিয়াল</small></div>
+<div class="stat">নগদ বিক্রি<strong id="cash">0</strong><small>রিয়াল</small></div>
+<div class="stat">কার্ড বিক্রি<strong id="card">0</strong><small>রিয়াল</small></div>
+</div>
+<div class="stat" style="margin-top:10px">
+বিক্রি থেকে খরচ বাদে<strong id="net">0</strong><small>রিয়াল</small>
+</div>
+</div>
+
+<div class="card">
+<h3>বিক্রি যোগ করুন</h3>
+<label>নগদ বিক্রি (রিয়াল)</label>
+<input type="number" id="cashInput" min="0" placeholder="যেমন 150">
+<label>কার্ড বিক্রি (রিয়াল)</label>
+<input type="number" id="cardInput" min="0" placeholder="যেমন 200">
+<button onclick="addSale()">বিক্রি সংরক্ষণ করুন</button>
+</div>
+
+<div class="card">
+<h3>খরচ যোগ করুন</h3>
+<label>খরচের বিবরণ</label>
+<input id="expenseName" placeholder="যেমন কেমিক্যাল">
+<label>খরচের পরিমাণ (রিয়াল)</label>
+<input type="number" id="expenseAmount" min="0" placeholder="যেমন 25">
+<button onclick="addExpense()">খরচ সংরক্ষণ করুন</button>
+</div>
+
+<div class="card">
+<h3>লেনদেনের তালিকা</h3>
+<div id="records">এখনো কোনো হিসাব নেই।</div>
+</div>
+</main>
+<script>
+const key="washmore_records_v1";
+let records=JSON.parse(localStorage.getItem(key)||"[]");
+const el=id=>document.getElementById(id);
+el("date").value=new Date().toLocaleDateString("en-CA");
+function save(){
+localStorage.setItem(key,JSON.stringify(records));
+render();
+}
+function addSale(){
+let cash=Number(el("cashInput").value||0);
+let card=Number(el("cardInput").value||0);
+if(cash<0||card<0||cash+card<=0){alert("সঠিক বিক্রির পরিমাণ লিখুন");return}
+records.push({id:Date.now(),date:el("date").value,type:"বিক্রি",name:"নগদ ও কার্ড",cash,card,amount:cash+card});
+el("cashInput").value="";el("cardInput").value="";
+save();
+}
+function addExpense(){
+let name=el("expenseName").value.trim();
+let amount=Number(el("expenseAmount").value);
+if(!name||!Number.isFinite(amount)||amount<=0){alert("বিবরণ ও সঠিক পরিমাণ লিখুন");return}
+records.push({id:Date.now(),date:el("date").value,type:"খরচ",name,amount});
+el("expenseName").value="";el("expenseAmount").value="";
+save();
+}
+function removeRecord(id){
+if(confirm("এই হিসাবটি মুছে ফেলবেন?")){
+records=records.filter(r=>r.id!==id);save();
+}
+}
+function render(){
+let list=records.filter(r=>r.date===el("date").value);
+let sales=list.filter(r=>r.type==="বিক্রি");
+let expenses=list.filter(r=>r.type==="খরচ");
+let cash=sales.reduce((s,r)=>s+r.cash,0);
+let card=sales.reduce((s,r)=>s+r.card,0);
+let expense=expenses.reduce((s,r)=>s+r.amount,0);
+let total=cash+card;
+el("sales").textContent=total;
+el("expenses").textContent=expense;
+el("cash").textContent=cash;
+el("card").textContent=card;
+el("net").textContent=total-expense;
+el("records").innerHTML=list.length?list.slice().reverse().map(r=>
+`<div class="item"><div><b>${r.type}: ${r.name}</b><br><small>${r.date}</small><br>${r.type==="বিক্রি"?"নগদ "+r.cash+" / কার্ড "+r.card:r.amount+" রিয়াল"}</div><button class="delete" onclick="removeRecord(${r.id})">মুছুন</button></div>`
+).join(""):"এখনো কোনো হিসাব নেই।";
+}
+el("date").addEventListener("change",render);
+render();
+</script>
+</body>
+</html>
